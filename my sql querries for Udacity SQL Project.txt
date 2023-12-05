@@ -1,0 +1,88 @@
+--Question 2 under Question 2 Set
+
+SELECT ART.ArtistId, ART.Name AS ArtistName,
+  COUNT(TRID.TrackId) AS Songs
+FROM Artist ART
+  JOIN Album ALB ON ART.ArtistId = ALB.ArtistId
+  JOIN Track TRID ON ALB.AlbumId = TRID.AlbumId
+  JOIN Genre GEN ON TRID.GenreId = GEN.GenreId
+WHERE GEN.Name = 'Rock'
+GROUP BY ART.ArtistId,ART.Name
+ORDER BY Songs DESC
+LIMIT 10;
+
+--Question 3 on Questions Set 2 Set
+
+--First Part of Query 
+
+CREATE View PJ
+As 
+SELECT 
+  ART.Name AS ArtistName, CUSID.CustomerId,
+  SUM(INVL.UnitPrice * INVL.Quantity) AS AmountSpent
+FROM 
+  InvoiceLine INVL
+  JOIN Track TRA ON INVL.TrackId = TRA.TrackId
+  JOIN Album ALB ON TRA.AlbumId = ALB.AlbumId
+  JOIN Artist ART ON ALB.ArtistId = ART.ArtistId
+  JOIN Invoice CUSID ON CUSID.InvoiceId = INVL.InvoiceId
+GROUP BY ART.Name, CUSID.CustomerId
+ORDER BY AmountSpent DESC
+	
+-----Second Part	
+	
+SELECT PJ.ArtistName, PJ.AmountSpent, CUSID.CustomerId, CUSID.FirstName, CUSID.LastName
+FROM PJ 
+JOIN Customer CUSID ON PJ.CustomerId = CUSID.CustomerId
+WHERE PJ.ArtistName = 'Iron Maiden'
+ORDER BY AmountSpent DESC
+	
+	
+
+
+
+--Question 1 From Set 3
+
+WITH GenrePurchases AS (
+ SELECT COUN.Country,
+ GEN.Name AS Genre,
+ COUNT(INVL.InvoiceLineId) AS Purchases
+FROM InvoiceLine INVL
+ JOIN Track TRA ON INVL.TrackId = TRA.TrackId
+ JOIN Genre GEN ON TRA.GenreId = GEN.GenreId
+ JOIN Invoice INV ON INVL.InvoiceId = INV.InvoiceId
+ JOIN Customer COUN ON INV.CustomerId = COUN.CustomerId
+ GROUP BY COUN.Country, GEN.Name
+),
+MaxPurchases AS (
+ SELECT Country,
+MAX(Purchases) AS MaxPurchases
+ FROM GenrePurchases
+ GROUP BY Country
+)
+SELECT GENP.Purchases,GENP.Country,
+ GENP.Genre
+FROM GenrePurchases GENP
+JOIN MaxPurchases MAXP ON GENP.Country = MAXP.Country AND GENP.Purchases = MAXP.MaxPurchases
+ORDER BY GENP.Country, GENP.Purchases DESC;
+
+
+--Question 3 From Question 3
+
+WITH CustomerSpending AS (
+ SELECT PJ.CustomerId, PJ.FirstName, PJ.LastName, PJ.Country,
+SUM(INV.Total) AS TotalSpent
+ FROM Customer PJ
+ JOIN Invoice INV ON PJ.CustomerId = INV.CustomerId
+ GROUP BY PJ.CustomerId, PJ.FirstName, PJ.LastName, PJ.Country
+),
+MaxSpending AS (
+ SELECT Country,
+MAX(TotalSpent) AS MaxSpent
+ FROM CustomerSpending
+ GROUP BY Country
+)
+SELECT CUSP.Country, CUSP.TotalSpent, CUSP.FirstName, CUSP.LastName, CUSP.CustomerId
+FROM CustomerSpending CUSP
+JOIN MaxSpending MAXS ON CUSP.Country = MAXS.Country AND CUSP.TotalSpent = MAXS.MaxSpent
+ORDER BY CUSP.Country, CUSP.CustomerId;
