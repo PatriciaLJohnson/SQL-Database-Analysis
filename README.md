@@ -1,1 +1,2 @@
 # SQL-Database-Project
+In this project, I created SQL queries for the Chinook Database. The Chinook Database holds information about a Digital Music Store. For this project, I will be assisting the Chinook team with understanding the media in their store, their customers and employees, and their invoice information. I used SQLite to create a series of SQL queries for the Chinook Database, and created charts in Microsoft Excel & PowerPoint to create the visuals. 
