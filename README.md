@@ -47,9 +47,6 @@ Visualizations
 Visual representations of the query results were created in Microsoft Excel and compiled into PowerPoint slides to illustrate trends and key findings.
 
 Repository Structure
-pgsql
-Copy
-Edit
 /SQL-Database-Analysis
 │
 ├── /queries
@@ -62,3 +59,4 @@ Edit
 │   └── presentation.pptx
 │
 └── README.md
+
